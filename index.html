@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liberte</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Geist for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- VCR OSD Mono for Yeezus card -->
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/vcr-osd-mono');
+
+    /* Proxima Nova fallback — user should place ProximaNova locally */
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: local('Proxima Nova ExtraBold'), local('ProximaNova-Extrabold');
+      font-weight: 800;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── TOKENS ── */
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #141414;
+      --surface: #1a1a1a;
+      --surface2: #222222;
+      --border: rgba(255,255,255,0.07);
+      --text: #e8e8e8;
+      --muted: #666;
+      --accent: #f5d800;
+      --accent-hover: #ffe033;
+      --red: #e53935;
+      --font-heading: 'Proxima Nova', 'Montserrat', 'Arial Black', sans-serif;
+      --font-body: 'Geist', 'DM Sans', sans-serif;
+      --font-vcr: 'VCR OSD Mono', monospace;
+      --nav-h: 68px;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 100;
+      background: transparent;
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: invert(1);
+    }
+    .nav-logo-text {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-links a.active { opacity: 1; color: #fff; }
+
+    /* ── PAGES ── */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+    .page.active { display: block; }
+
+    /* ═══════════════════════════════
+       HOME PAGE
+    ═══════════════════════════════ */
+    #page-home {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('cb5f153484d6ea50c647ca91851b6a2d.jpg');
+      background-size: cover;
+      background-position: center top;
+      filter: blur(2px) brightness(0.55) saturate(0.8);
+      transform: scale(1.05);
+    }
+
+    /* Inner shadow overlay — dark vignette from all edges */
+    .hero-shadow {
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 180px 100px var(--bg);
+      background: radial-gradient(ellipse at center,
+        transparent 20%,
+        rgba(13,13,13,0.55) 60%,
+        rgba(13,13,13,0.92) 100%);
+    }
+    /* Extra bottom fade */
+    .hero-shadow::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(13,13,13,0.6) 0%,
+        transparent 25%,
+        transparent 65%,
+        rgba(13,13,13,0.9) 90%,
+        var(--bg) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 680px;
+      padding: 0 24px;
+    }
+    .hero-content h1 {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: 0.01em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .hero-content p {
+      font-size: clamp(14px, 1.5vw, 16px);
+      line-height: 1.7;
+      color: rgba(255,255,255,0.82);
+      margin-bottom: 36px;
+    }
+
+    .btn-join {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: 0.02em;
+      padding: 16px 56px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-join:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Trusted by */
+    .trusted {
+      position: relative;
+      background: var(--bg);
+      padding: 56px 40px 64px;
+    }
+    .trusted-label {
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .trusted-logos {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .trusted-logos img, .trusted-logos .ref-logo {
+      height: 28px;
+      opacity: 0.45;
+      filter: brightness(2) grayscale(1);
+      transition: opacity 0.2s;
+      object-fit: contain;
+    }
+    .trusted-logos .ref-logo:hover { opacity: 0.7; }
+
+    /* ═══════════════════════════════
+       HABERLER PAGE
+    ═══════════════════════════════ */
+    #page-haberler {
+      background: var(--bg);
+    }
+
+    .page-inner {
+      padding: calc(var(--nav-h) + 40px) 64px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 32px;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .news-card:hover { border-color: rgba(255,255,255,0.14); }
+
+    .news-card.featured {
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 500px;
+    }
+
+    .news-card h2 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: clamp(20px, 2vw, 26px);
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    .news-card h3 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .news-card p {
+      color: #888;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .news-signature {
+      margin-top: 32px;
+    }
+    .news-signature-name {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .news-signature img {
+      height: 48px;
+      filter: invert(1);
+      opacity: 0.6;
+    }
+    .news-signature .sig-placeholder {
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+    /* hand-drawn style sig fallback */
+    .sig-svg { opacity: 0.6; filter: invert(1); }
+
+    /* ═══════════════════════════════
+       YARDIM PAGE
+    ═══════════════════════════════ */
+    #page-yardim {
+      background: var(--bg);
+    }
+
+    .help-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      font-size: 15px;
+      line-height: 1.75;
+      color: #999;
+      margin-bottom: 40px;
+    }
+    .help-box a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .help-box a:hover { color: var(--accent); }
+
+    .help-section-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .help-numbers {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      display: inline-block;
+      min-width: 340px;
+    }
+    .help-numbers ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .help-numbers li {
+      font-size: 14px;
+      color: #888;
+      font-feature-settings: 'tnum';
+    }
+    .help-numbers li span {
+      font-weight: 600;
+      color: #bbb;
+      margin-right: 6px;
+    }
+
+    /* ═══════════════════════════════
+       MAĞAZA PAGE
+    ═══════════════════════════════ */
+    #page-magaza {
+      background: #f5f0e8; /* cream like in screenshot */
+    }
+    #page-magaza .page-title {
+      color: #111;
+    }
+    #page-magaza .page-inner {
+      /* keep same padding */
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .shop-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .shop-card:hover { transform: translateY(-4px); }
+
+    /* Card image fills top */
+    .shop-card-img {
+      width: 100%;
+      flex: 1;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Bottom info strip inside card — for cards with visible overlay */
+    .shop-card-body {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 18px 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Plus card — black bg */
+    .card-plus { background: #0a0a0a; }
+    .card-plus-plus { background: #0a0a0a; }
+
+    .card-info-dark { color: rgba(255,255,255,0.55); font-size: 11px; line-height: 1.5; }
+    .card-name-dark {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 22px;
+      color: #fff;
+    }
+    .card-price-dark {
+      text-align: right;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      white-space: nowrap;
+    }
+    .card-price-libuck {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 600;
+    }
+    .price-sep { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
+    .price-tl { display: block; }
+
+    .btn-al {
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-al:hover { background: #eee; }
+
+    /* Yeezus card */
+    .card-yeezus {
+      background: #d9d4c8;
+    }
+    .yeezus-name {
+      font-family: var(--font-vcr);
+      font-size: 26px;
+      letter-spacing: 0.05em;
+      color: #000;
+    }
+    .yeezus-features {
+      font-size: 12px;
+      color: #333;
+      line-height: 1.7;
+      margin-bottom: 4px;
+    }
+    .yeezus-price-block { text-align: right; }
+    .yeezus-price-original {
+      font-size: 12px;
+      color: #888;
+      text-decoration: line-through;
+    }
+    .yeezus-price-current {
+      font-size: 13px;
+      color: #111;
+      font-weight: 600;
+    }
+    .yeezus-discount-badge {
+      background: rgba(229,57,53,0.15);
+      color: var(--red);
+      font-size: 10px;
+      font-style: italic;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .btn-al-yeezus {
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-vcr);
+      font-size: 14px;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: background 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .btn-al-yeezus:hover { background: #222; }
+
+    /* Tolkien card */
+    .card-tolkien {
+      background: #2d3320;
+    }
+    .tolkien-discount-badge {
+      background: rgba(229,57,53,0.18);
+      color: #ff6b6b;
+      font-size: 10px;
+      font-style: italic;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .tolkien-price-original {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      text-decoration: line-through;
+    }
+    .tolkien-price-current {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ── TOAST / MODAL ── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 28px;
+      font-size: 14px;
+      color: var(--text);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ── PLUS CARD STAR SHAPES via CSS ── */
+    .plus-star {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: 160px;
+      height: 160px;
+    }
+    /* Abstract star / slash shape using clip-path */
+    .plus-shape {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      clip-path: polygon(
+        50% 0%, 56% 42%, 100% 35%, 62% 55%,
+        82% 100%, 50% 70%, 18% 100%, 38% 55%,
+        0% 35%, 44% 42%
+      );
+      opacity: 0.95;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .shop-grid { grid-template-columns: repeat(2, 1fr); }
+      .news-grid { grid-template-columns: 1fr; }
+      .news-card.featured { min-height: unset; }
+      .page-inner { padding: calc(var(--nav-h) + 24px) 24px 64px; }
+      nav { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#" onclick="showPage('home')">
+    <!-- inline SVG flame/leaf icon as fallback -->
+    <img src="logo.svg" alt="Liberte" onerror="this.style.display='none'">
+    <!-- fallback inline icon -->
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="logo-fallback">
+      <path d="M12 2C12 2 6 7 6 13C6 16.31 8.69 19 12 19C15.31 19 18 16.31 18 13C18 7 12 2 12 2Z" fill="white"/>
+      <path d="M12 22V19" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-text">LIBERTE</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('yardim')" id="nav-yardim">Yardım</a></li>
+    <li><a href="#" onclick="showPage('haberler')" id="nav-haberler">Haberler</a></li>
+    <li><a href="#" onclick="showPage('magaza')" id="nav-magaza">Mağaza</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HOME ═══ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-shadow"></div>
+    <div class="hero-content">
+      <h1>Liberte hakkında</h1>
+      <p>Liberte (eski adıyla Freedom) tamamen Türkçe ve topluluk odaklı özgür bir sunucudur. Tam bağımsız sunucumuz 2024'ten beri Freedom ismiyle hizmet veren sunucu yapımız 2026 yılında yeni bir yapılanmaya girmiştir.</p>
+      <a href="https://stt.gg/4DbWxZnC" target="_blank" class="btn-join">Katıl</a>
+    </div>
+  </section>
+
+  <section class="trusted">
+    <div class="trusted-label">Trusted by</div>
+    <div class="trusted-logos">
+      <img src="Renascenti.svg" alt="Renascenti" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.05em\'>Renascenti</span>'">
+      <img src="windows digital.svg" alt="Windows Digital" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.05em\'>Windows Digital</span>'">
+      <img src="ASRATYA.svg" alt="ASRATYA" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.06em\'>ASRATYA</span>'">
+      <img src="alphamoriahq.svg" alt="Alphamoria HQ" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.04em\'>alphamoriahq</span>'">
+    </div>
+  </section>
+</div>
+
+<!-- ═══ HABERLER ═══ -->
+<div id="page-haberler" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">Haberler</h1>
+    <div class="news-grid">
+
+      <!-- Featured -->
+      <div class="news-card featured">
+        <div>
+          <h2>Başkan Yasyros göreve başladı!</h2>
+          <p>Bugün görevine başlayan Yasyros, özgürlük yemini ettikten sonra resmen görevine başladı. 2026 Mayıs ayından, 2026 Ağustos ayına kadar sürecek görev süresince yapacakları henüz net görünmüyor.</p>
+        </div>
+        <div class="news-signature">
+          <div class="news-signature-name">Yasyros</div>
+          <img src="yasyrossignature.svg" alt="Yasyros imzası" onerror="this.outerHTML=`
+            <svg class='sig-svg' width='220' height='55' viewBox='0 0 220 55' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M10 40 Q30 10 50 30 Q70 50 90 20 Q110 0 130 25 Q150 45 170 20 Q185 8 210 35' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/>
+              <path d='M15 45 Q60 38 110 42 Q155 46 205 40' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.3'/>
+            </svg>
+          `">
+        </div>
+      </div>
+
+      <!-- Side cards -->
+      <div class="news-card">
+        <h3>Üye alımları açıldı</h3>
+        <p>Üye girişi kapalı olan Liberte bugün tam anlamıyla topluluğa açılıyor, henüz bitmemiş sunucu yapılanmasının nasıl taşınacağı tartışma konusu.</p>
+      </div>
+
+      <div class="news-card">
+        <h3>Bayram indirimi</h3>
+        <p>Kurban bayramı nedeniyle mağazada büyük bir kampanya gerçekleşti. Ürünlerin bazıları yarı fiyatına kadar düştü.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ YARDIM ═══ -->
+<div id="page-yardim" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">Yardım</h1>
+
+    <div class="help-box">
+      Yetkili ekip henüz bir web yardım servisi barındırmadığı için herhangi bir sorun karşısında <a href="https://stt.gg/4DbWxZnC" target="_blank">stoat.chat</a> üzerinde <a href="https://stt.gg/4DbWxZnC" target="_blank">@Yasyros</a>'a şikayetlerinizi iletebilirsiniz. Değerlendirme süreci 3 ile 12 saat arasında sürebilir, bu süreç içinde sabırlı olun ve geri dönüt bekleyin.
+    </div>
+
+    <div class="help-section-title">Türkiye yerel yardım servisleri:</div>
+    <div class="help-numbers">
+      <ul>
+        <li><span>112</span>– Genel Acil Çağrı Hattı</li>
+        <li><span>183</span>– Sosyal Destek Hattı</li>
+        <li><span>115</span>– Yeşilay/YEDAM Servisleri</li>
+        <li><span>168</span>– Türk Kızılay Çağrı Merkezi</li>
+        <li><span>191</span>– Uyuşturucu ile Mücadele</li>
+        <li><span>144</span>– Sosyal yardım ve Maddi destek Hattı</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAĞAZA ═══ -->
+<div id="page-magaza" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">Mağaza</h1>
+    <div class="shop-grid">
+
+      <!-- Plus -->
+      <div class="shop-card card-plus">
+        <img src="pluscard.png" alt="Plus" class="shop-card-img" style="object-position: center center;"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <!-- Fallback visual -->
+        <div style="display:none; flex:1; align-items:center; justify-content:center; position:relative;">
+          <div class="plus-star"><div class="plus-shape"></div></div>
+        </div>
+        <div class="shop-card-body">
+          <div>
+            <div class="card-info-dark">Özel oda<br>Güzel görünüm<br>Öne çıkan kullanıcı</div>
+            <div class="card-name-dark">Plus</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+            <div class="card-price-dark">
+              <span class="card-price-libuck">190K LIBUCK</span>
+              <span class="price-sep">ya da</span>
+              <span class="price-tl">8.99 TL</span>
+            </div>
+            <button class="btn-al" onclick="showToast()">Al</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plus+ -->
+      <div class="shop-card card-plus-plus">
+        <img src="plus+card.png" alt="Plus+" class="shop-card-img"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div style="display:none; flex:1; align-items:center; justify-content:center; position:relative;">
+          <div class="plus-star" style="width:200px;height:200px;">
+            <div class="plus-shape" style="clip-path:polygon(50% 0%, 58% 38%, 100% 30%, 65% 52%, 88% 100%, 50% 68%, 12% 100%, 35% 52%, 0% 30%, 42% 38%);"></div>
+          </div>
+        </div>
+        <div class="shop-card-body">
+          <div>
+            <div class="card-info-dark">Plus'taki her şey<br>Plus+ içeriği<br>Plus+ rozetleri</div>
+            <div class="card-name-dark">Plus+</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
+            <div class="card-price-dark">
+              <span class="card-price-libuck">230K LIBUCK</span>
+              <span class="price-sep">ya da</span>
+              <span class="price-tl">14.99 TL</span>
+            </div>
+            <button class="btn-al" onclick="showToast()">Al</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yeezus -->
+      <div class="shop-card card-yeezus" style="background:#cfc8b8;">
+        <img src="yeezuscard.png" alt="Yeezus" class="shop-card-img" style="padding: 20px; object-fit:contain;"
+          onerror="this.style.cssText='display:block;width:100%;height:180px;object-fit:contain;padding:32px;'; ">
+        <div class="shop-card-body" style="position:static; padding:16px 18px 20px; background:#cfc8b8;">
+          <div>
+            <div class="yeezus-features">Plus abonelik<br>Yeezus kozmetik<br>Yeezus içerik</div>
+            <div class="yeezus-name">YEEZUS</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <div class="yeezus-price-block">
+              <div class="yeezus-discount-badge">Bayram indirimi</div>
+              <div class="yeezus-price-original">201k LIBUCK</div>
+              <div class="yeezus-price-current">189k LIBUCK</div>
+              <div class="yeezus-price-original" style="margin-top:2px;">10 TL</div>
+              <div class="yeezus-price-current">6.99 TL</div>
+            </div>
+            <button class="btn-al-yeezus" onclick="showToast()">AL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tolkien -->
+      <div class="shop-card card-tolkien">
+        <img src="tolkiencard.png" alt="Tolkien Set" class="shop-card-img"
+          onerror="this.style.cssText='display:block;flex:1;object-fit:contain;padding:24px;'; ">
+        <div class="shop-card-body">
+          <div>
+            <div class="card-info-dark" style="font-size:10px;">Plus'taki her şey. Yüzüklerin efendisi kozmetik.</div>
+            <div class="card-name-dark" style="font-size:18px;">Tolkien set</div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+            <div>
+              <div class="tolkien-discount-badge">Bayram indirimi</div>
+              <div class="tolkien-price-original">168 LIBUCK</div>
+              <div class="tolkien-price-current">200K LIBUCK</div>
+              <div class="tolkien-price-original">ya da</div>
+              <div class="tolkien-price-current" style="color:rgba(255,255,255,0.85); font-size:14px; font-weight:600;">9.99 TL</div>
+            </div>
+            <button class="btn-al" onclick="showToast()">Al</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">⚠️ Online işlem henüz yapılamıyor.</div>
+
+<script>
+  // ── Page routing ──
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+
+    const navLink = document.getElementById('nav-' + page);
+    if (navLink) navLink.classList.add('active');
+
+    window.scrollTo(0, 0);
+  }
+
+  // ── Nav scroll style ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // ── Toast ──
+  let toastTimer;
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // ── Prevent default on nav links ──
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', e => e.preventDefault());
+  });
+</script>
+</body>
+</html>
