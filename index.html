@@ -94,7 +94,7 @@
       border-bottom: 1px solid rgba(0,0,0,0.08);
     }
     nav.light-theme .nav-logo-text { color: #111; }
-    nav.light-theme .nav-logo img { filter: invert(0); } /* black logo on light bg */
+    nav.light-theme .nav-logo img { filter: brightness(0); } /* force pure black on light bg */
     nav.light-theme .nav-links a { color: #111; }
     nav.light-theme .nav-links a:hover { color: #000; }
     nav.light-theme .nav-links a.active { color: #000; }
@@ -240,21 +240,21 @@
     .trusted-logos {
       display: flex;
       align-items: center;
-      gap: 48px;
+      gap: 52px;
       flex-wrap: wrap;
+      overflow: visible;
     }
     .trusted-logos img {
-      max-height: 32px;
-      max-width: 160px;
+      height: 36px;
       width: auto;
-      height: auto;
-      opacity: 0.38;
-      filter: invert(1) grayscale(1);
-      object-fit: contain;
+      max-width: 200px;
+      opacity: 0.45;
+      filter: brightness(0) invert(1);
       display: block;
+      flex-shrink: 0;
       transition: opacity 0.2s;
     }
-    .trusted-logos img:hover { opacity: 0.62; }
+    .trusted-logos img:hover { opacity: 0.7; }
 
     /* ═══════════════════════════════
        HABERLER + YARDIM (dark theme)
