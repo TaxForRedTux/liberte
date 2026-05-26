@@ -4,31 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Liberte</title>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Geist for body -->
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
-  <!-- VCR OSD Mono for Yeezus card -->
   <style>
     @import url('https://fonts.cdnfonts.com/css/vcr-osd-mono');
 
-    /* Proxima Nova fallback — user should place ProximaNova locally */
     @font-face {
       font-family: 'Proxima Nova';
-      src: local('Proxima Nova ExtraBold'), local('ProximaNova-Extrabold');
+      src: url('Proxima Nova Extrabold.ttf') format('truetype');
       font-weight: 800;
     }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('Proxima Nova Semibold.ttf') format('truetype');
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('Proxima Nova Regular.ttf') format('truetype');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'Proxima Nova';
+      src: url('Proxima Nova Light.ttf') format('truetype');
+      font-weight: 300;
+    }
 
-    /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
-    /* ── TOKENS ── */
     :root {
       --bg: #0d0d0d;
-      --bg2: #141414;
       --surface: #1a1a1a;
       --surface2: #222222;
       --border: rgba(255,255,255,0.07);
@@ -43,6 +50,13 @@
       --nav-h: 68px;
       --radius: 16px;
       --radius-sm: 10px;
+      /* Dark/news/help colors */
+      --dark-bg: #0C0B11;
+      --dark-surface: #21212D;
+      --dark-text: #474753;
+      --sig-color: #F8F1DA;
+      /* Shop */
+      --shop-bg: #FFFDF3;
     }
 
     body {
@@ -66,25 +80,38 @@
       padding: 0 40px;
       z-index: 100;
       background: transparent;
-      transition: background 0.3s;
+      transition: background 0.3s, border-color 0.3s;
     }
     nav.scrolled {
-      background: rgba(13,13,13,0.85);
-      backdrop-filter: blur(16px);
+      background: rgba(13,13,13,0.88);
+      backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
     }
+    /* Light nav theme for shop page */
+    nav.light-theme {
+      background: rgba(255,253,243,0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    nav.light-theme .nav-logo-text { color: #111; }
+    nav.light-theme .nav-logo img { filter: none; }
+    nav.light-theme .nav-links a { color: #111; }
+    nav.light-theme .nav-links a:hover { color: #000; }
+    nav.light-theme .nav-links a.active { color: #000; }
 
     .nav-logo {
       display: flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
+      cursor: pointer;
     }
     .nav-logo img {
-      width: 28px;
       height: 28px;
+      width: auto;
       object-fit: contain;
       filter: invert(1);
+      transition: filter 0.3s;
     }
     .nav-logo-text {
       font-family: var(--font-heading);
@@ -92,6 +119,7 @@
       font-size: 20px;
       letter-spacing: 0.08em;
       color: #fff;
+      transition: color 0.3s;
     }
 
     .nav-links {
@@ -107,28 +135,19 @@
       font-size: 16px;
       letter-spacing: 0.02em;
       opacity: 0.85;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, color 0.3s;
       cursor: pointer;
     }
     .nav-links a:hover { opacity: 1; }
-    .nav-links a.active { opacity: 1; color: #fff; }
+    .nav-links a.active { opacity: 1; }
 
     /* ── PAGES ── */
-    .page {
-      display: none;
-      min-height: 100vh;
-    }
+    .page { display: none; min-height: 100vh; }
     .page.active { display: block; }
 
     /* ═══════════════════════════════
        HOME PAGE
     ═══════════════════════════════ */
-    #page-home {
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Hero */
     .hero {
       position: relative;
       width: 100%;
@@ -138,42 +157,37 @@
       justify-content: center;
       overflow: hidden;
     }
-
     .hero-bg {
       position: absolute;
       inset: 0;
       background-image: url('cb5f153484d6ea50c647ca91851b6a2d.jpg');
       background-size: cover;
       background-position: center top;
-      filter: blur(2px) brightness(0.55) saturate(0.8);
+      filter: blur(2px) brightness(0.52) saturate(0.8);
       transform: scale(1.05);
     }
-
-    /* Inner shadow overlay — dark vignette from all edges */
     .hero-shadow {
       position: absolute;
       inset: 0;
-      box-shadow: inset 0 0 180px 100px var(--bg);
+      box-shadow: inset 0 0 200px 120px #0d0d0d;
       background: radial-gradient(ellipse at center,
-        transparent 20%,
-        rgba(13,13,13,0.55) 60%,
-        rgba(13,13,13,0.92) 100%);
+        transparent 15%,
+        rgba(13,13,13,0.5) 55%,
+        rgba(13,13,13,0.9) 100%);
     }
-    /* Extra bottom fade */
     .hero-shadow::after {
       content: '';
       position: absolute;
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(13,13,13,0.6) 0%,
-        transparent 25%,
+        rgba(13,13,13,0.65) 0%,
+        transparent 22%,
         transparent 65%,
-        rgba(13,13,13,0.9) 90%,
-        var(--bg) 100%
+        rgba(13,13,13,0.88) 90%,
+        #0d0d0d 100%
       );
     }
-
     .hero-content {
       position: relative;
       z-index: 2;
@@ -195,7 +209,6 @@
       color: rgba(255,255,255,0.82);
       margin-bottom: 36px;
     }
-
     .btn-join {
       display: inline-block;
       background: var(--accent);
@@ -211,16 +224,11 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.15s;
     }
-    .btn-join:hover {
-      background: var(--accent-hover);
-      transform: translateY(-2px);
-    }
+    .btn-join:hover { background: var(--accent-hover); transform: translateY(-2px); }
 
-    /* Trusted by */
     .trusted {
-      position: relative;
-      background: var(--bg);
-      padding: 56px 40px 64px;
+      background: #0d0d0d;
+      padding: 56px 40px 72px;
     }
     .trusted-label {
       font-size: 13px;
@@ -235,28 +243,26 @@
       gap: 48px;
       flex-wrap: wrap;
     }
-    .trusted-logos img, .trusted-logos .ref-logo {
-      height: 28px;
-      opacity: 0.45;
-      filter: brightness(2) grayscale(1);
-      transition: opacity 0.2s;
+    .trusted-logos img {
+      height: 26px;
+      opacity: 0.38;
+      filter: brightness(3) grayscale(1);
       object-fit: contain;
+      transition: opacity 0.2s;
     }
-    .trusted-logos .ref-logo:hover { opacity: 0.7; }
+    .trusted-logos img:hover { opacity: 0.6; }
 
     /* ═══════════════════════════════
-       HABERLER PAGE
+       HABERLER + YARDIM (dark theme)
     ═══════════════════════════════ */
-    #page-haberler {
-      background: var(--bg);
+    #page-haberler, #page-yardim {
+      background: var(--dark-bg);
     }
-
     .page-inner {
-      padding: calc(var(--nav-h) + 40px) 64px 80px;
-      max-width: 1200px;
+      padding: calc(var(--nav-h) + 44px) 64px 80px;
+      max-width: 1240px;
       margin: 0 auto;
     }
-
     .page-title {
       font-family: var(--font-heading);
       font-weight: 800;
@@ -265,24 +271,23 @@
       margin-bottom: 40px;
     }
 
+    /* News grid */
     .news-grid {
       display: grid;
-      grid-template-columns: 1fr 420px;
+      grid-template-columns: 1fr 400px;
       grid-template-rows: auto auto;
       gap: 16px;
     }
-
     .news-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-surface);
       border-radius: var(--radius);
       padding: 36px;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.2s;
+      /* Big blur shadow at 0x 0y 64.1blur */
+      box-shadow: 0 0 64.1px 0 var(--dark-surface);
     }
-    .news-card:hover { border-color: rgba(255,255,255,0.14); }
-
     .news-card.featured {
       grid-row: 1 / 3;
       display: flex;
@@ -290,12 +295,11 @@
       justify-content: space-between;
       min-height: 500px;
     }
-
     .news-card h2 {
       font-family: var(--font-heading);
       font-weight: 700;
       font-size: clamp(20px, 2vw, 26px);
-      color: var(--text);
+      color: var(--dark-text);
       margin-bottom: 20px;
       line-height: 1.3;
     }
@@ -303,62 +307,48 @@
       font-family: var(--font-heading);
       font-weight: 700;
       font-size: 20px;
-      color: var(--text);
+      color: var(--dark-text);
       margin-bottom: 14px;
     }
     .news-card p {
-      color: #888;
+      color: var(--dark-text);
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
-    .news-signature {
-      margin-top: 32px;
-    }
+    .news-signature { margin-top: 32px; }
     .news-signature-name {
       font-family: var(--font-heading);
       font-weight: 600;
       font-size: 15px;
-      color: #666;
+      color: var(--sig-color);
+      opacity: 0.7;
       margin-bottom: 8px;
     }
     .news-signature img {
-      height: 48px;
-      filter: invert(1);
-      opacity: 0.6;
-    }
-    .news-signature .sig-placeholder {
-      height: 48px;
-      display: flex;
-      align-items: center;
-    }
-    /* hand-drawn style sig fallback */
-    .sig-svg { opacity: 0.6; filter: invert(1); }
-
-    /* ═══════════════════════════════
-       YARDIM PAGE
-    ═══════════════════════════════ */
-    #page-yardim {
-      background: var(--bg);
+      height: 52px;
+      /* signature color: #F8F1DA */
+      filter: invert(1) sepia(1) saturate(0.3) brightness(1.1);
+      opacity: 0.75;
     }
 
+    /* Help page */
     .help-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--dark-surface);
       border-radius: var(--radius);
       padding: 28px 32px;
       font-size: 15px;
       line-height: 1.75;
-      color: #999;
+      color: var(--dark-text);
       margin-bottom: 40px;
+      box-shadow: 0 0 64.1px 0 var(--dark-surface);
     }
     .help-box a {
-      color: var(--text);
+      color: #8a8a9a;
       text-decoration: underline;
       text-underline-offset: 3px;
     }
-    .help-box a:hover { color: var(--accent); }
-
+    .help-box a:hover { color: #bbb; }
     .help-section-title {
       font-family: var(--font-heading);
       font-weight: 700;
@@ -366,211 +356,104 @@
       color: #fff;
       margin-bottom: 20px;
     }
-
     .help-numbers {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--dark-surface);
       border-radius: var(--radius);
       padding: 28px 32px;
       display: inline-block;
       min-width: 340px;
+      box-shadow: 0 0 64.1px 0 var(--dark-surface);
     }
-    .help-numbers ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .help-numbers li {
-      font-size: 14px;
-      color: #888;
-      font-feature-settings: 'tnum';
-    }
-    .help-numbers li span {
-      font-weight: 600;
-      color: #bbb;
-      margin-right: 6px;
-    }
+    .help-numbers ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .help-numbers li { font-size: 14px; color: var(--dark-text); }
+    .help-numbers li span { font-weight: 600; color: #5a5a6a; margin-right: 6px; }
 
     /* ═══════════════════════════════
-       MAĞAZA PAGE
+       MAĞAZA (light cream theme)
     ═══════════════════════════════ */
     #page-magaza {
-      background: #f5f0e8; /* cream like in screenshot */
+      background: var(--shop-bg);
     }
-    #page-magaza .page-title {
-      color: #111;
-    }
-    #page-magaza .page-inner {
-      /* keep same padding */
-    }
+    #page-magaza .page-title { color: #111; }
 
     .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      display: flex;
+      flex-wrap: wrap;
       gap: 20px;
+      align-items: flex-start;
     }
 
+    /* Cards — exact dimensions, image fills entire card, NO overlaid text */
     .shop-card {
-      border-radius: var(--radius);
+      border-radius: 18px;
       overflow: hidden;
-      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+    .shop-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+    }
+    .shop-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-plus      { width: 261.83px; height: 360px; background: #0a0a0a; }
+    .card-plus-plus { width: 265.83px; height: 360px; background: #0a0a0a; }
+    .card-yeezus    { width: 260px;    height: 360px; background: #cfc8b8; }
+    .card-tolkien   { width: 260px;    height: 360px; background: #2d3320; }
+
+    /* Al button — sits below card, not on top of image */
+    .card-wrapper {
       display: flex;
       flex-direction: column;
-      min-height: 360px;
-      cursor: pointer;
-      transition: transform 0.2s;
+      align-items: center;
+      gap: 12px;
     }
-    .shop-card:hover { transform: translateY(-4px); }
-
-    /* Card image fills top */
-    .shop-card-img {
-      width: 100%;
-      flex: 1;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* Bottom info strip inside card — for cards with visible overlay */
-    .shop-card-body {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 16px 18px 20px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    /* Plus card — black bg */
-    .card-plus { background: #0a0a0a; }
-    .card-plus-plus { background: #0a0a0a; }
-
-    .card-info-dark { color: rgba(255,255,255,0.55); font-size: 11px; line-height: 1.5; }
-    .card-name-dark {
-      font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: 22px;
-      color: #fff;
-    }
-    .card-price-dark {
-      text-align: right;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      white-space: nowrap;
-    }
-    .card-price-libuck {
-      font-size: 14px;
-      color: rgba(255,255,255,0.7);
-      font-weight: 600;
-    }
-    .price-sep { display: block; font-size: 10px; color: rgba(255,255,255,0.35); }
-    .price-tl { display: block; }
-
     .btn-al {
-      background: #fff;
-      color: #000;
+      background: #111;
+      color: #fff;
       border: none;
       border-radius: 50px;
       font-family: var(--font-heading);
       font-weight: 700;
       font-size: 14px;
-      padding: 10px 22px;
+      padding: 10px 32px;
       cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.02em;
     }
-    .btn-al:hover { background: #eee; }
-
-    /* Yeezus card */
-    .card-yeezus {
-      background: #d9d4c8;
-    }
-    .yeezus-name {
-      font-family: var(--font-vcr);
-      font-size: 26px;
-      letter-spacing: 0.05em;
-      color: #000;
-    }
-    .yeezus-features {
-      font-size: 12px;
-      color: #333;
-      line-height: 1.7;
-      margin-bottom: 4px;
-    }
-    .yeezus-price-block { text-align: right; }
-    .yeezus-price-original {
-      font-size: 12px;
-      color: #888;
-      text-decoration: line-through;
-    }
-    .yeezus-price-current {
-      font-size: 13px;
-      color: #111;
-      font-weight: 600;
-    }
-    .yeezus-discount-badge {
-      background: rgba(229,57,53,0.15);
-      color: var(--red);
-      font-size: 10px;
-      font-style: italic;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 4px;
-    }
+    .btn-al:hover { background: #333; transform: translateY(-1px); }
     .btn-al-yeezus {
       background: #000;
       color: #fff;
       border: none;
       border-radius: 6px;
       font-family: var(--font-vcr);
-      font-size: 14px;
-      padding: 10px 22px;
+      font-size: 13px;
+      padding: 10px 28px;
       cursor: pointer;
       transition: background 0.15s;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
     .btn-al-yeezus:hover { background: #222; }
 
-    /* Tolkien card */
-    .card-tolkien {
-      background: #2d3320;
-    }
-    .tolkien-discount-badge {
-      background: rgba(229,57,53,0.18);
-      color: #ff6b6b;
-      font-size: 10px;
-      font-style: italic;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 4px;
-    }
-    .tolkien-price-original {
-      font-size: 11px;
-      color: rgba(255,255,255,0.35);
-      text-decoration: line-through;
-    }
-    .tolkien-price-current {
-      font-size: 13px;
-      color: rgba(255,255,255,0.7);
-    }
-
-    /* ── TOAST / MODAL ── */
+    /* ── TOAST ── */
     .toast {
       position: fixed;
       bottom: 32px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: #1e1e1e;
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: var(--radius-sm);
       padding: 14px 28px;
       font-size: 14px;
-      color: var(--text);
+      color: #e8e8e8;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s, transform 0.25s;
@@ -580,34 +463,10 @@
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
-      pointer-events: auto;
     }
 
-    /* ── PLUS CARD STAR SHAPES via CSS ── */
-    .plus-star {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -60%);
-      width: 160px;
-      height: 160px;
-    }
-    /* Abstract star / slash shape using clip-path */
-    .plus-shape {
-      position: absolute;
-      inset: 0;
-      background: #fff;
-      clip-path: polygon(
-        50% 0%, 56% 42%, 100% 35%, 62% 55%,
-        82% 100%, 50% 70%, 18% 100%, 38% 55%,
-        0% 35%, 44% 42%
-      );
-      opacity: 0.95;
-    }
-
-    /* Responsive */
     @media (max-width: 900px) {
-      .shop-grid { grid-template-columns: repeat(2, 1fr); }
+      .shop-grid { justify-content: center; }
       .news-grid { grid-template-columns: 1fr; }
       .news-card.featured { min-height: unset; }
       .page-inner { padding: calc(var(--nav-h) + 24px) 24px 64px; }
@@ -617,26 +476,20 @@
 </head>
 <body>
 
-<!-- ═══ NAV ═══ -->
+<!-- NAV -->
 <nav id="main-nav">
-  <a class="nav-logo" href="#" onclick="showPage('home')">
-    <!-- inline SVG flame/leaf icon as fallback -->
-    <img src="logo.svg" alt="Liberte" onerror="this.style.display='none'">
-    <!-- fallback inline icon -->
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="logo-fallback">
-      <path d="M12 2C12 2 6 7 6 13C6 16.31 8.69 19 12 19C15.31 19 18 16.31 18 13C18 7 12 2 12 2Z" fill="white"/>
-      <path d="M12 22V19" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
+  <a class="nav-logo" onclick="showPage('home')">
+    <img src="logo.svg" alt="Liberte">
     <span class="nav-logo-text">LIBERTE</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#" onclick="showPage('yardim')" id="nav-yardim">Yardım</a></li>
-    <li><a href="#" onclick="showPage('haberler')" id="nav-haberler">Haberler</a></li>
-    <li><a href="#" onclick="showPage('magaza')" id="nav-magaza">Mağaza</a></li>
+    <li><a onclick="showPage('yardim')" id="nav-yardim">Yardım</a></li>
+    <li><a onclick="showPage('haberler')" id="nav-haberler">Haberler</a></li>
+    <li><a onclick="showPage('magaza')" id="nav-magaza">Mağaza</a></li>
   </ul>
 </nav>
 
-<!-- ═══ HOME ═══ -->
+<!-- HOME -->
 <div id="page-home" class="page active">
   <section class="hero">
     <div class="hero-bg"></div>
@@ -647,25 +500,22 @@
       <a href="https://stt.gg/4DbWxZnC" target="_blank" class="btn-join">Katıl</a>
     </div>
   </section>
-
   <section class="trusted">
     <div class="trusted-label">Trusted by</div>
     <div class="trusted-logos">
-      <img src="Renascenti.svg" alt="Renascenti" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.05em\'>Renascenti</span>'">
-      <img src="windows digital.svg" alt="Windows Digital" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.05em\'>Windows Digital</span>'">
-      <img src="ASRATYA.svg" alt="ASRATYA" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.06em\'>ASRATYA</span>'">
-      <img src="alphamoriahq.svg" alt="Alphamoria HQ" onerror="this.outerHTML='<span class=\'ref-logo\' style=\'font-family:var(--font-heading);font-weight:800;color:#fff;opacity:.35;font-size:18px;letter-spacing:.04em\'>alphamoriahq</span>'">
+      <img src="Renascenti.svg" alt="Renascenti">
+      <img src="windows digital.svg" alt="Windows Digital">
+      <img src="ASRATYA.svg" alt="ASRATYA">
+      <img src="alphamoriahq.svg" alt="Alphamoria HQ">
     </div>
   </section>
 </div>
 
-<!-- ═══ HABERLER ═══ -->
+<!-- HABERLER -->
 <div id="page-haberler" class="page">
   <div class="page-inner">
     <h1 class="page-title">Haberler</h1>
     <div class="news-grid">
-
-      <!-- Featured -->
       <div class="news-card featured">
         <div>
           <h2>Başkan Yasyros göreve başladı!</h2>
@@ -673,39 +523,28 @@
         </div>
         <div class="news-signature">
           <div class="news-signature-name">Yasyros</div>
-          <img src="yasyrossignature.svg" alt="Yasyros imzası" onerror="this.outerHTML=`
-            <svg class='sig-svg' width='220' height='55' viewBox='0 0 220 55' xmlns='http://www.w3.org/2000/svg'>
-              <path d='M10 40 Q30 10 50 30 Q70 50 90 20 Q110 0 130 25 Q150 45 170 20 Q185 8 210 35' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/>
-              <path d='M15 45 Q60 38 110 42 Q155 46 205 40' stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.3'/>
-            </svg>
-          `">
+          <img src="yasyrossignature.svg" alt="Yasyros imzası">
         </div>
       </div>
-
-      <!-- Side cards -->
       <div class="news-card">
         <h3>Üye alımları açıldı</h3>
         <p>Üye girişi kapalı olan Liberte bugün tam anlamıyla topluluğa açılıyor, henüz bitmemiş sunucu yapılanmasının nasıl taşınacağı tartışma konusu.</p>
       </div>
-
       <div class="news-card">
         <h3>Bayram indirimi</h3>
         <p>Kurban bayramı nedeniyle mağazada büyük bir kampanya gerçekleşti. Ürünlerin bazıları yarı fiyatına kadar düştü.</p>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ═══ YARDIM ═══ -->
+<!-- YARDIM -->
 <div id="page-yardim" class="page">
   <div class="page-inner">
     <h1 class="page-title">Yardım</h1>
-
     <div class="help-box">
       Yetkili ekip henüz bir web yardım servisi barındırmadığı için herhangi bir sorun karşısında <a href="https://stt.gg/4DbWxZnC" target="_blank">stoat.chat</a> üzerinde <a href="https://stt.gg/4DbWxZnC" target="_blank">@Yasyros</a>'a şikayetlerinizi iletebilirsiniz. Değerlendirme süreci 3 ile 12 saat arasında sürebilir, bu süreç içinde sabırlı olun ve geri dönüt bekleyin.
     </div>
-
     <div class="help-section-title">Türkiye yerel yardım servisleri:</div>
     <div class="help-numbers">
       <ul>
@@ -720,103 +559,38 @@
   </div>
 </div>
 
-<!-- ═══ MAĞAZA ═══ -->
+<!-- MAĞAZA -->
 <div id="page-magaza" class="page">
   <div class="page-inner">
     <h1 class="page-title">Mağaza</h1>
     <div class="shop-grid">
 
-      <!-- Plus -->
-      <div class="shop-card card-plus">
-        <img src="pluscard.png" alt="Plus" class="shop-card-img" style="object-position: center center;"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <!-- Fallback visual -->
-        <div style="display:none; flex:1; align-items:center; justify-content:center; position:relative;">
-          <div class="plus-star"><div class="plus-shape"></div></div>
+      <div class="card-wrapper">
+        <div class="shop-card card-plus">
+          <img src="pluscard.png" alt="Plus">
         </div>
-        <div class="shop-card-body">
-          <div>
-            <div class="card-info-dark">Özel oda<br>Güzel görünüm<br>Öne çıkan kullanıcı</div>
-            <div class="card-name-dark">Plus</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
-            <div class="card-price-dark">
-              <span class="card-price-libuck">190K LIBUCK</span>
-              <span class="price-sep">ya da</span>
-              <span class="price-tl">8.99 TL</span>
-            </div>
-            <button class="btn-al" onclick="showToast()">Al</button>
-          </div>
-        </div>
+        <button class="btn-al" onclick="showToast()">Al</button>
       </div>
 
-      <!-- Plus+ -->
-      <div class="shop-card card-plus-plus">
-        <img src="plus+card.png" alt="Plus+" class="shop-card-img"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <div style="display:none; flex:1; align-items:center; justify-content:center; position:relative;">
-          <div class="plus-star" style="width:200px;height:200px;">
-            <div class="plus-shape" style="clip-path:polygon(50% 0%, 58% 38%, 100% 30%, 65% 52%, 88% 100%, 50% 68%, 12% 100%, 35% 52%, 0% 30%, 42% 38%);"></div>
-          </div>
+      <div class="card-wrapper">
+        <div class="shop-card card-plus-plus">
+          <img src="plus+card.png" alt="Plus+">
         </div>
-        <div class="shop-card-body">
-          <div>
-            <div class="card-info-dark">Plus'taki her şey<br>Plus+ içeriği<br>Plus+ rozetleri</div>
-            <div class="card-name-dark">Plus+</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:10px;">
-            <div class="card-price-dark">
-              <span class="card-price-libuck">230K LIBUCK</span>
-              <span class="price-sep">ya da</span>
-              <span class="price-tl">14.99 TL</span>
-            </div>
-            <button class="btn-al" onclick="showToast()">Al</button>
-          </div>
-        </div>
+        <button class="btn-al" onclick="showToast()">Al</button>
       </div>
 
-      <!-- Yeezus -->
-      <div class="shop-card card-yeezus" style="background:#cfc8b8;">
-        <img src="yeezuscard.png" alt="Yeezus" class="shop-card-img" style="padding: 20px; object-fit:contain;"
-          onerror="this.style.cssText='display:block;width:100%;height:180px;object-fit:contain;padding:32px;'; ">
-        <div class="shop-card-body" style="position:static; padding:16px 18px 20px; background:#cfc8b8;">
-          <div>
-            <div class="yeezus-features">Plus abonelik<br>Yeezus kozmetik<br>Yeezus içerik</div>
-            <div class="yeezus-name">YEEZUS</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-            <div class="yeezus-price-block">
-              <div class="yeezus-discount-badge">Bayram indirimi</div>
-              <div class="yeezus-price-original">201k LIBUCK</div>
-              <div class="yeezus-price-current">189k LIBUCK</div>
-              <div class="yeezus-price-original" style="margin-top:2px;">10 TL</div>
-              <div class="yeezus-price-current">6.99 TL</div>
-            </div>
-            <button class="btn-al-yeezus" onclick="showToast()">AL</button>
-          </div>
+      <div class="card-wrapper">
+        <div class="shop-card card-yeezus">
+          <img src="yeezuscard.png" alt="Yeezus">
         </div>
+        <button class="btn-al-yeezus" onclick="showToast()">AL</button>
       </div>
 
-      <!-- Tolkien -->
-      <div class="shop-card card-tolkien">
-        <img src="tolkiencard.png" alt="Tolkien Set" class="shop-card-img"
-          onerror="this.style.cssText='display:block;flex:1;object-fit:contain;padding:24px;'; ">
-        <div class="shop-card-body">
-          <div>
-            <div class="card-info-dark" style="font-size:10px;">Plus'taki her şey. Yüzüklerin efendisi kozmetik.</div>
-            <div class="card-name-dark" style="font-size:18px;">Tolkien set</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
-            <div>
-              <div class="tolkien-discount-badge">Bayram indirimi</div>
-              <div class="tolkien-price-original">168 LIBUCK</div>
-              <div class="tolkien-price-current">200K LIBUCK</div>
-              <div class="tolkien-price-original">ya da</div>
-              <div class="tolkien-price-current" style="color:rgba(255,255,255,0.85); font-size:14px; font-weight:600;">9.99 TL</div>
-            </div>
-            <button class="btn-al" onclick="showToast()">Al</button>
-          </div>
+      <div class="card-wrapper">
+        <div class="shop-card card-tolkien">
+          <img src="tolkiencard.png" alt="Tolkien Set">
         </div>
+        <button class="btn-al" onclick="showToast()">Al</button>
       </div>
 
     </div>
@@ -827,7 +601,8 @@
 <div class="toast" id="toast">⚠️ Online işlem henüz yapılamıyor.</div>
 
 <script>
-  // ── Page routing ──
+  const LIGHT_PAGES = ['magaza'];
+
   function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -838,16 +613,26 @@
     const navLink = document.getElementById('nav-' + page);
     if (navLink) navLink.classList.add('active');
 
+    // Theme toggle
+    const nav = document.getElementById('main-nav');
+    if (LIGHT_PAGES.includes(page)) {
+      nav.classList.add('light-theme');
+    } else {
+      nav.classList.remove('light-theme');
+    }
+
     window.scrollTo(0, 0);
   }
 
-  // ── Nav scroll style ──
-  const nav = document.getElementById('main-nav');
+  // Nav scroll style (only apply on dark pages)
+  const navEl = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 10);
+    const isLight = navEl.classList.contains('light-theme');
+    if (!isLight) {
+      navEl.classList.toggle('scrolled', window.scrollY > 10);
+    }
   });
 
-  // ── Toast ──
   let toastTimer;
   function showToast() {
     const toast = document.getElementById('toast');
@@ -855,11 +640,6 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
   }
-
-  // ── Prevent default on nav links ──
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', e => e.preventDefault());
-  });
 </script>
 </body>
 </html>
